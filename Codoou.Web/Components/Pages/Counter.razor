@@ -1,0 +1,93 @@
+﻿@page "/"
+@using Codoou.Web.HumanizedDuration
+@rendermode InteractiveServer
+
+<PageTitle>@Title</PageTitle>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col">
+            <h1>@Title</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        @if (HumanizedDuration.Years > 0)
+        {
+            <div class="col-12 col-sm-6 col-md-3 my-2">
+                <div class="counter">
+                    <div class="value">@HumanizedDuration.Years</div>
+                    <div class="label">Years</div>
+                </div>
+            </div>
+        }
+        @if (HumanizedDuration.Months > 0)
+        {
+            <div class="col-12 col-sm-6 col-md-3 my-2">
+                <div class="counter">
+                    <div class="value">@HumanizedDuration.Months</div>
+                    <div class="label">Months</div>
+                </div>
+            </div>
+        }
+        @if (HumanizedDuration.Weeks > 0)
+        {
+            <div class="col-12 col-sm-6 col-md-3 my-2">
+                <div class="counter">
+                    <div class="value">@HumanizedDuration.Weeks</div>
+                    <div class="label">Weeks</div>
+                </div>
+            </div>
+        }
+        <div class="col-12 col-sm-6 col-md-3 my-2">
+            <div class="counter">
+                <div class="value">@HumanizedDuration.Days</div>
+                <div class="label">Days</div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 my-2">
+            <div class="counter">
+                <div class="value">@NumberFormat(HumanizedDuration.Hours)</div>
+                <div class="label">Hours</div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 my-2">
+            <div class="counter">
+                <div class="value">@NumberFormat(HumanizedDuration.Minutes)</div>
+                <div class="label">Minutes</div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 my-2">
+            <div class="counter">
+                <div class="value">@NumberFormat(HumanizedDuration.Seconds)</div>
+                <div class="label">Seconds</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    readonly String Title = Environment.GetEnvironmentVariable("COUNTER_TITLE") ?? "First moon landing";
+    readonly DateTime TargetDate = DateTime.Parse(Environment.GetEnvironmentVariable("COUNTER_TARGET") ?? "1969-07-20T20:17:40Z");
+
+    readonly Humanizer _humanizer = new Humanizer();
+    HumanizedDuration HumanizedDuration => _humanizer.Humanize(TargetDate);
+
+    System.Timers.Timer _timer;
+
+    protected override void OnInitialized()
+    {
+        _timer = new System.Timers.Timer(1000);
+        _timer.Elapsed += (sender, args) =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+        _timer.Start();
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    static string NumberFormat(int number) => number.ToString("D2");
+}
