@@ -85,4 +85,17 @@ public class HumanizerTest
         Assert.That(timeSpan.Weeks, Is.EqualTo(1));
         Assert.That(timeSpan.Remainder, Is.EqualTo(new TimeSpan(1, 1, 1, 1)));
     }
+
+    [Test]
+    public void Humanize_not_a_month()
+    {
+        DateTime target = DateTime.Parse("2024-06-10 12:00:00");
+        DateTime current = DateTime.Parse("2024-07-09 12:00:00");
+
+        var timeSpan = _humanizer.Humanize(target, current);
+        Assert.That(timeSpan.Years, Is.EqualTo(0));
+        Assert.That(timeSpan.Months, Is.EqualTo(0));
+        Assert.That(timeSpan.Weeks, Is.EqualTo(4));
+        Assert.That(timeSpan.Remainder, Is.EqualTo(TimeSpan.FromDays(1)));
+    }
 }

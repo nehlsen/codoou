@@ -18,6 +18,10 @@ public class Humanizer
 
         var years = to.Year - from.Year;
         var months = to.Month - from.Month;
+        if (to.Month > from.Month && to.Day < from.Day)
+        {
+            months -= 1;
+        }
         var remainder = to - from.AddYears(years).AddMonths(months);
 
         var weeks = 0;
